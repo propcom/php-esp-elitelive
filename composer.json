@@ -1,0 +1,19 @@
+{
+    "name": "propcom/esp-elitelive",
+    "description": "ESP EliteLive Authentication Client Library",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Thomas Jepp",
+            "email": "thomas.jepp@propeller.co.uk"
+        }
+    ],
+    "require": {
+        "guzzlehttp/guzzle": "^5.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "\\Propcom\\ESP\\EliteLive": "src/"
+        }
+    }
+}
