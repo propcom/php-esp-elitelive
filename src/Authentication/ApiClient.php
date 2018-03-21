@@ -8,6 +8,13 @@ class ApiClient
 	protected $apiUsername;
 	protected $apiPassword;
 
+	protected $log;
+
+	public function __construct(\Psr\Log\LoggerInterface $log)
+	{
+		$this->log = $log;
+	}
+
 	public function setApiEndpoint($apiEndpoint)
 	{
 		$this->apiEndpoint = $apiEndpoint;
@@ -55,9 +62,9 @@ class ApiClient
 
 		if ($token && $token instanceof AuthenticationToken) {
 			$request['Token'] = $token->getToken();
-			var_dump($request);
-
 		}
+
+		$this->log->debug('doRequest', [ 'url' => $_SERVER['REQUEST_URI'], 'request' => $request ]);
 
 		try {
 			$result = $client->post(
@@ -69,10 +76,13 @@ class ApiClient
 				]
 			);
 		} catch (\Guzzle\Http\RequestException $ex) {
+			$this->log->error('doRequest', [ 'exception' => $ex ]);
 			// log, and throw a wrapped exception here
 		}
 
-		$requestBody = $result->getBody();
+		$requestBody = (string)$result->getBody();
+
+		$this->log->debug('doRequest', [ 'url' => $_SERVER['REQUEST_URI'], 'result' => $requestBody ]);
 
 		return json_decode($requestBody);
 	}
@@ -103,14 +113,11 @@ class ApiClient
 			$token
 		);
 
-		var_dump($response);
-		die();
-
 		if ($response->Ack === -1) {
 			throw new ApiException($response);
 		}
 
-		var_dump($response);
-		die();
+		$user = User::createFromArray($response->Data);
+		return $user;
 	}
 }
