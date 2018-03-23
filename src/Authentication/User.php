@@ -138,4 +138,14 @@ class User
 	{
 		return $this->getData('Mobile');
 	}
+
+	public function getMemberTypeId()
+	{
+		return (int)$this->getData('MType');
+	}
+
+	public function getMemberTypeDescription()
+	{
+		return $this->getData('MTDesc');
+	}
 }
